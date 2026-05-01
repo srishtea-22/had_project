@@ -3,6 +3,8 @@ import '../models/subject.dart';
 import '../services/firebase_service.dart';
 import 'add_subject_screen.dart';
 import 'subject_card.dart';
+import 'timetable_screen.dart';
+import 'today_classes_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -40,6 +42,14 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.calendar_month_outlined, color: Color(0xFF6C63FF)),
+            tooltip: 'Timetable',
+            onPressed: () => Navigator.push(context,
+                MaterialPageRoute(builder: (_) => const TimetableScreen())),
+          ),
+        ],
       ),
       body: StreamBuilder<List<Subject>>(
         stream: service.subjectsStream(),
@@ -82,10 +92,22 @@ class HomeScreen extends StatelessWidget {
             );
           }
 
-          return ListView.builder(
-            padding: const EdgeInsets.only(top: 8, bottom: 100),
-            itemCount: subjects.length,
-            itemBuilder: (_, i) => SubjectCard(key: ValueKey(subjects[i].id), subject: subjects[i]),
+          return CustomScrollView(
+            slivers: [
+              // Today's classes section at top
+              const SliverToBoxAdapter(child: TodayClassesWidget()),
+              // All subjects list
+              SliverPadding(
+                padding: const EdgeInsets.only(bottom: 100),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (_, i) => SubjectCard(
+                        key: ValueKey(subjects[i].id), subject: subjects[i]),
+                    childCount: subjects.length,
+                  ),
+                ),
+              ),
+            ],
           );
         },
       ),

@@ -28,8 +28,6 @@ class _SubjectCardState extends State<SubjectCard> {
   @override
   void didUpdateWidget(SubjectCard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Only sync from Firebase if the user hasn't locally modified the counts.
-    // This prevents a newly added subject from overwriting another card's state.
     if (oldWidget.subject.id != widget.subject.id) {
       present = widget.subject.present;
       absent = widget.subject.absent;
@@ -46,7 +44,6 @@ class _SubjectCardState extends State<SubjectCard> {
         absent: absent,
       );
     });
-    // save to firebase
     _service.updateSubject(_calculated);
   }
 
@@ -126,7 +123,6 @@ class _SubjectCardState extends State<SubjectCard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Subject name + percentage
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -173,7 +169,6 @@ class _SubjectCardState extends State<SubjectCard> {
 
               const SizedBox(height: 16),
 
-              // Present / Absent counters
               Row(
                 children: [
                   _Counter(
@@ -209,7 +204,6 @@ class _SubjectCardState extends State<SubjectCard> {
 
               const SizedBox(height: 12),
 
-              // Status message
               Container(
                 width: double.infinity,
                 padding:
